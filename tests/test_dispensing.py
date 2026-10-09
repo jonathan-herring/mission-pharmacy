@@ -11,13 +11,13 @@ from app.dispensing import Drug, dispense, low_stock_warning, prefill_amount
 
 
 def make_drug(stock, default=20, threshold=10):
-    return Drug(name="Vitamin B12", stock=stock, default_amount=default,
+    return Drug(name="Vitamin B12", stock=stock, default_dispense_amount=default,
                 low_stock_threshold=threshold)
 
 
 # Happy path
 
-def test_dispensing_the_default_amount_reduces_stock():
+def test_dispensing_the_default_dispense_amount_reduces_stock():
     drug = make_drug(stock=50)
     result = dispense(drug, 20)
     assert drug.stock == 30
@@ -59,7 +59,7 @@ def test_prefill_without_default_asks_for_amount():
 def test_first_dispense_without_default_sets_the_default():
     drug = make_drug(stock=50, default=None)
     dispense(drug, 30)
-    assert drug.default_amount == 30
+    assert drug.default_dispense_amount == 30
 
 
 # Zero and negative amounts

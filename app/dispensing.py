@@ -15,7 +15,7 @@ from dataclasses import dataclass
 class Drug:
     name: str
     stock: int
-    default_amount: int | None = None
+    default_dispense_amount: int | None = None
     low_stock_threshold: int | None = None
     recount_needed: bool = False
 
@@ -28,13 +28,13 @@ class DispenseResult:
 
 def prefill_amount(drug: Drug) -> tuple[int | None, str | None]:
     """Amount to show when the volunteer taps Dispense, plus any warning."""
-    if drug.default_amount is None:
+    if drug.default_dispense_amount is None:
         return None, "no default amount set"
     if drug.stock <= 0:
-        return drug.default_amount, "out of stock"
-    if drug.stock < drug.default_amount:
+        return drug.default_dispense_amount, "out of stock"
+    if drug.stock < drug.default_dispense_amount:
         return drug.stock, "lower than default amount"
-    return drug.default_amount, None
+    return drug.default_dispense_amount, None
 
 
 def dispense(drug: Drug, amount: int, confirmed_on_hand: bool = False) -> DispenseResult:
@@ -50,13 +50,13 @@ def dispense(drug: Drug, amount: int, confirmed_on_hand: bool = False) -> Dispen
     else:
         drug.stock -= amount
 
-    if drug.default_amount is None:
-        drug.default_amount = amount
+    if drug.default_dispense_amount is None:
+        drug.default_dispense_amount = amount
     return DispenseResult(dispensed=amount)
 
 
 def low_stock_warning(drug: Drug) -> bool:
     """True when 0 < stock <= threshold. At zero the out of stock warning shows instead."""
-    if drug.default_amount is None or drug.low_stock_threshold is None:
+    if drug.default_dispense_amount is None or drug.low_stock_threshold is None:
         return False
     return 0 < drug.stock <= drug.low_stock_threshold
